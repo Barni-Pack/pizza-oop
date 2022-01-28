@@ -24,7 +24,7 @@ WIDGETS = dict()
 
 class Offset:
     greetings = 0
-    order_number_label = 1
+    order_number = 1
 
 
 greetings_label = tk.Label(
@@ -39,18 +39,18 @@ greetings_label.grid(
 )
 
 
-class Helper:
+class Widget:
     def label(
         text: str,
         row: int,
         column: int = None,
-        # columnspan: int = None,
         sticky='nsew',
         **kwargs,
     ) -> None:
         '''Creates and places with grid new label'''
         global WIDGETS
 
+        # Add column to kwrags because it can be None
         kwargs.update(dict(
             column=column,
         ))
@@ -71,7 +71,7 @@ class Helper:
 
 
 class Labels:
-    greetings_label = dict(
+    greetings = dict(
         text='Добавление пиццы',
         row=Offset.greetings,
         columnspan=6,
@@ -79,36 +79,15 @@ class Labels:
         pady=20,
     )
 
+    order_number = dict(
+        text=f'Номер заказа: {ORDER_NUMBER}',
+        row=Offset.order_number,
+        columnspan=6,
+    )
 
-class Updater:
-    def update_label(label_kwargs: Labels):
-        Helper.label(**label_kwargs)
-        
-    # def greetings_label():
-    #     kwargs = Labels.
-    #     Helper.label(**kwargs)
+Widget.label(**Labels.greetings)
+Widget.label(**Labels.order_number)
 
-    def order_number_label():
-        global ORDER_NUMBER
-        kwargs = dict(
-            text=f'Номер заказа: {ORDER_NUMBER}',
-            row=Offset.order_number_label,
-            columnspan=6,
-        )
-        Helper.label(**kwargs)
-
-#     greetings_label = tk.Label(
-#     master=window,
-#     text='Добавление пиццы',
-# )
-# greetings_label.grid(
-#     row=Offset.greetings,
-#     columnspan=6,
-#     sticky='nsew',
-#     pady=20,
-# )
-
-Helper.label(**Labels.greetings_label)
 # Updater.greetings_label()
 
 # def update_count_label(pizza: Pizza):
