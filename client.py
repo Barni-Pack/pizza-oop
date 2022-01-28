@@ -4,7 +4,7 @@ from app.terminal import terminal
 from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
 from functools import partial
 from app import pizza_storage
-from config import Offset, Labels
+from config import Offset
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
 window_width = 420 + 6 * 10
@@ -18,28 +18,13 @@ window.resizable(width=False, height=False)
 # window.rowconfigure(0, minsize=50, weight=1)
 window.columnconfigure(list(range(6)), minsize=50, weight=1)
 
-
-Widgets.label(**Labels.greetings)
-
-
-# def update_count_label(pizza: Pizza):
-#     pizza_count = len(
-#         [p for p in terminal.order.products_list if p == pizza]
-#     )
-#     print(pizza_count)
-#     Widget.label(
-#         text=pizza_count,
-# **Labels.pizza_count,
-#     )
-#     # count_label = tk.Label(
-#     #     master=window,
-#     #     text=pizza_count,
-#     # )
-#     # count_label.grid(
-#     #     row=row_offset,
-#     #     column=5,
-#     #     sticky='nsew',
-#     # )
+Widgets.label(
+    text='Welcome to Pizza Hub!\nHere is menu:',
+    row=Offset.greetings,
+    columnspan=6,
+    sticky='nsew',
+    pady=20,
+)
 
 
 def redraw_labels(func):
@@ -83,26 +68,18 @@ for pizza_id, pizza in enumerate(pizzas):
         column=2,
     )
 
-    btn_decrease = tk.Button(
-        master=window,
+    Widgets.button(
         text="-",
-        command=partial(remove_product, pizza)
-    )
-    btn_increase = tk.Button(
-        master=window,
-        text="+",
-        command=partial(add_product, pizza)
-    )
-
-    btn_decrease.grid(
+        command=partial(remove_product, pizza),
         row=row_offset,
         column=3,
-        sticky='nsew',
     )
-    btn_increase.grid(
+
+    Widgets.button(
+        text="+",
+        command=partial(add_product, pizza),
         row=row_offset,
         column=4,
-        sticky='nsew',
     )
 
 
@@ -137,11 +114,10 @@ def commit_order():
 
 
 Widgets.button(
-    text='Commit your order!',
     command=commit_order,
     row=len(pizzas) + 2,
-    columnspan=4,
-    column=1,
+    text='Commit your order!',
+    columnspan=6,
 )
 
 update_counters()
