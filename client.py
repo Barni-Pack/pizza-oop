@@ -4,7 +4,7 @@ from app.terminal import terminal
 from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
 from functools import partial
 # from app import pizza_storage
-from config import Offset
+from db_config import Offset
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
 window_width = 420 + 6 * 10
