@@ -3,9 +3,10 @@ db_config.database_path = 'sqlite:///database/pizza_types.db'  # noqa
 from widgets import Widgets
 from engine import window, tk
 from app.terminal import terminal
-from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
+from app.pizza_classes import Pizza
+from app.pizza_classes.factory import PIZZA_CLASSES
 from functools import partial
-from database.alchemy import get_pizza_types, delete_pizza_type, get_pizza_price
+from database.alchemy import get_pizza_types, get_pizza_price
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
 window_width = 420 + 6 * 10
@@ -19,6 +20,8 @@ window.resizable(width=False, height=False)
 # window.rowconfigure(0, minsize=50, weight=1)
 window.columnconfigure(list(range(6)), minsize=50, weight=1)
 
+
+print(PIZZA_CLASSES)
 
 def redraw(func):
     def wrapper(*args, **kwargs):
@@ -55,10 +58,9 @@ def draw_gui():
     )
     ROW += 1
 
-    pizzas = get_pizza_types()
-    for pizza_id, pizza in enumerate(pizzas):
-        pizza_name = pizza['name']
-        price = get_pizza_price(id=pizza['id'])
+    for pizza_id, pizza in enumerate(PIZZA_CLASSES):
+        pizza_name = pizza.__class__.__name__
+        price = pizza.price
         ROW += 1
 
         Widgets.label(
@@ -97,37 +99,25 @@ def draw_gui():
             column=5,
             sticky='nsew',
         )
+    ROW += 1
 
-    # def update_order_price():
-    #     order_price = terminal.order.get_total_price()
-    #     Widgets.label(
-    #         text=f'Order total price: {order_price}',
-    #         row=len(pizzas) + 1,
-    #         columnspan=6,
-    #         sticky='nsew',
-    #         pady=20,
-    #     )
-
-    # @redraw_labels
-    # def commit_order():
-    #     terminal.order.commit()
+    order_price = terminal.order.get_total_price()
+    Widgets.label(
+        text=f'Order total price: {order_price}',
+        row=ROW,
+        columnspan=6,
+        sticky='nsew',
+        pady=20,
+    )
+    ROW += 1
 
     Widgets.button(
         command=commit_order,
-        row=len(pizzas) + 2,
+        row=ROW,
         text='Commit your order!',
         columnspan=6,
     )
 
-    # update_counters()
-    # update_order_price()
 
-
-# def Refresher():
-#     global text
-#     # text.configure(text=time.asctime())
-#     print('nigga')
 draw_gui()
-#     window.after(1000, Refresher)
-# Refresher()
 window.mainloop()

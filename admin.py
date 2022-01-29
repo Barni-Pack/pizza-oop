@@ -1,5 +1,5 @@
-import db_config  # noqa
-db_config.database_path = 'sqlite:///database/pizza_types.db'  # noqa
+# import db_config  # noqa
+# db_config.database_path = 'sqlite:///database/pizza_types.db'  # noqa
 from widgets import Widgets
 from engine import window, tk
 from app.terminal import terminal

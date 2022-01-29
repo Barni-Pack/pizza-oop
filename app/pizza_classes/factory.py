@@ -23,12 +23,12 @@ def pizza_factory(pizza_dict: dict):
         price=price,
     )
 
-    PIZZA_CLASSES.append(type(name, bases, dict_))
+    return type(name, bases, dict_)
 
 
 pizza_types = get_pizza_types()
 for pizza_type in pizza_types:
-    PIZZA_CLASSES.append(pizza_factory(pizza_dict=pizza_type))
+    PIZZA_CLASSES.append(pizza_factory(pizza_dict=pizza_type)())
 
 print(PIZZA_CLASSES)
 

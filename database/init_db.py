@@ -8,7 +8,7 @@ from toppings import toppings
 Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 
-print(get_pizza_types())
+# print(get_pizza_types())
 
 for topping in toppings:
     session.add(topping)

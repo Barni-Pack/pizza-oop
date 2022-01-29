@@ -57,6 +57,7 @@ def draw_gui():
     def remove_product(pizza: Pizza):
         terminal.order.remove_product(product=pizza)
 
+    pizzas = 
     pizzas = [
         Pepperoni(),
         Barbecue(),
