@@ -1,7 +1,9 @@
+from sqlalchemy import column
 import db_config  # noqa
 db_config.database_path = 'sqlite:///database/pizza_types.db'  # noqa
 from widgets import Widgets
 from engine import window, tk
+from tkinter import ttk
 from app.terminal import terminal
 from app.pizza_classes import Pizza
 from app.pizza_classes.factory import PIZZA_CLASSES
@@ -12,16 +14,32 @@ from database.alchemy import get_pizza_types, get_pizza_price
 window_width = 420 + 6 * 10
 window_height = 420
 
-
 window.title('Terminal')
 window.geometry(f'{window_width}x{window_height}')
 window.resizable(width=False, height=False)
-
-# window.rowconfigure(0, minsize=50, weight=1)
 window.columnconfigure(list(range(6)), minsize=50, weight=1)
+
+# notebook = ttk.Notebook(window)
+# notebook.grid()
+# f_orders = ttk.Frame(notebook)
+# f_make_order = ttk.Frame(notebook)
+# f_menu = ttk.Frame(notebook)
+
+# f_orders.grid()
+# f_make_order.grid()
+# f_menu.grid()
+
+# notebook.add(f_orders, text='Orders')
+# notebook.add(f_make_order, text='Make order')
+# notebook.add(f_menu, text='Menu')
+
+
+# f_make_order.rowconfigure(0, minsize=50, weight=1)
+
 
 
 print(PIZZA_CLASSES)
+
 
 def redraw(func):
     def wrapper(*args, **kwargs):
@@ -29,7 +47,7 @@ def redraw(func):
         # update_counters()
         for widget in window.winfo_children():
             widget.destroy()
-        draw_gui()
+        draw_f_make_order()
     return wrapper
 
 
@@ -48,8 +66,9 @@ def commit_order():
     terminal.order.commit()
 
 
-def draw_gui():
-    ROW = 0
+def draw_f_make_order():
+    # window = f_make_order
+    ROW = 1
     Widgets.label(
         text='Добро пожаловать на Pizza Hub!\nСоберите заказ из меню:',
         row=ROW,
@@ -119,5 +138,5 @@ def draw_gui():
     )
 
 
-draw_gui()
+draw_f_make_order()
 window.mainloop()

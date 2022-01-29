@@ -3,7 +3,7 @@
 from widgets import Widgets
 from engine import window, tk
 from app.terminal import terminal
-from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
+from app.pizza_classes import Pizza
 from functools import partial
 from database.alchemy import get_pizza_types, delete_pizza_type, get_pizza_price
 

@@ -1,5 +1,5 @@
 from distutils import command
-from engine import window, tk
+from engine import tk, window
 import functools
 
 
