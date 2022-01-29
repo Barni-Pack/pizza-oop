@@ -20,6 +20,16 @@ def get_pizza_types() -> list[dict]:
     return __query2dict(query=query)
 
 
+def get_pizza_price(id: int) -> int:
+    query = session.query(PizzaTypes).filter(PizzaTypes.id == id).all()
+    pizza = __query2dict(query=query).pop()
+    price = 0
+    toppings = pizza['toppings']
+    for topping in toppings.values():
+        price += topping['price'] * topping['amount']
+    return price
+
+
 def delete_pizza_type(id: int) -> None:
     '''Deletes pizza_type by id'''
     session.query(PizzaTypes).filter(PizzaTypes.id == id).delete()
@@ -27,4 +37,5 @@ def delete_pizza_type(id: int) -> None:
 
 
 if __name__ == "__main__":
-    print(get_pizza_types())
+    # print(get_pizza_types())
+    print(get_pizza_price(id=2))

@@ -1,4 +1,27 @@
-p2 = PizzaTypes(
+from db_model import PizzaTypes
+
+toppings = [
+    PizzaTypes(
+        name='Pepperoni',
+        toppings={
+            'Mozzarella': {
+                'price': 10,
+                'time': 1,
+                'amount': 2,
+            },
+            'Tomato': {
+                'price': 30,
+                'time': 3,
+                'amount': 1,
+            },
+            'Sausage': {
+                'price': 50,
+                'time': 4,
+                'amount': 1,
+            },
+        }
+    ),
+    PizzaTypes(
         name='Margaret',
         toppings={
             'Tomatoes': {
@@ -17,8 +40,8 @@ p2 = PizzaTypes(
                 'amount': 2,
             },
         }
-    )
-p3 = PizzaTypes(
+    ),
+    PizzaTypes(
         name='Caprese',
         toppings={
             'Tomatoes': {
@@ -52,8 +75,8 @@ p3 = PizzaTypes(
                 'amount': 6,
             },
         }
-    )
-p4 = PizzaTypes(
+    ),
+    PizzaTypes(
         name='4 cheeses',
         toppings={
             'Dor Blue Cheese': {
@@ -83,3 +106,4 @@ p4 = PizzaTypes(
             },
         }
     )
+]

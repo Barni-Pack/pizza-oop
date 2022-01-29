@@ -1,4 +1,7 @@
-from app.pizza_classes import Pizza
+from parent import Pizza
+import sys
+sys.path.append('../../')  # noqa
+from database.alchemy import get_pizza_types
 
 
 # class Toppings():
@@ -12,6 +15,14 @@ from app.pizza_classes import Pizza
 #     price=30,
 #     time=2,
 # )
+
+pizza_types = get_pizza_types()
+
+print(pizza_types)
+
+
+# class PizzaFactory(pizza_dict: dict):
+    
 
 
 class Pepperoni(Pizza):

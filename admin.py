@@ -5,7 +5,7 @@ from engine import window, tk
 from app.terminal import terminal
 from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
 from functools import partial
-from database.alchemy import get_pizza_types, delete_pizza_type
+from database.alchemy import get_pizza_types, delete_pizza_type, get_pizza_price
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
 window_width = 420 + 6 * 10
@@ -18,6 +18,47 @@ window.resizable(width=False, height=False)
 
 # window.rowconfigure(0, minsize=50, weight=1)
 window.columnconfigure(list(range(6)), minsize=50, weight=1)
+
+
+pizza_types = get_pizza_types()
+
+print(pizza_types)
+
+
+# class PizzaFactory(pizza_dict: dict):
+ 
+class Pepperoni(Pizza):
+    toppings = [
+            'Sausage "Pepperoni"',
+            'Mozzarella',
+            'Fresh-hearted pepper (black)',
+        ]
+    backing_time = 2
+    price = 450.00
+    
+
+class Barbecue(Pizza):
+    sause = 'Barbecue'
+    toppings = [
+            'Onion',
+            'Parsley',
+            'Chicken breask',
+        ]
+    backing_time = 2
+    price = 250.00
+    
+    
+class Seafood(Pizza):
+    toppings = [
+            'Tomatoes',
+            'Sweet peppers',
+            'Olieves',
+            'Seafood',
+            'Onion',
+            'Fresh-hearted pepper (black)',
+        ]
+    backing_time = 4
+    price = 650.00
 
 
 def redraw(func):
@@ -67,6 +108,7 @@ def draw_gui():
     pizzas = get_pizza_types()
     for pizza_id, pizza in enumerate(pizzas):
         pizza_name = pizza['name']
+        price = get_pizza_price(id=pizza['id']) 
         ROW += 1
 
         Widgets.label(
@@ -77,7 +119,7 @@ def draw_gui():
         )
 
         Widgets.label(
-            text='Цена (еще не считается)',
+            text=f'Цена: {price}',
             row=ROW,
             column=2,
         )
