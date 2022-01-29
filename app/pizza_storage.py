@@ -3,14 +3,15 @@ import pathlib
 
 
 conn = sqlite3.connect('app/pizza_storage.db')
+TABLE_NAME = 'PIZZA_TYPES'
 
 
 def create_pizza_storage_table():
-    sql = '''
-            CREATE TABLE PIZZA_STORAGE
-                (name TEXT NOT NULL PRIMARY KEY,
-                amount INTEGER NOT NULL)
-            
+    sql = f'''
+            CREATE TABLE {TABLE_NAME}
+                (id INT NOT NULL PRIMARY KEY autoincrement,
+                name TEXT NOT NULL unique,
+                toppings JSON NOT NULL)
             '''
     with conn:
         conn.execute(sql)
@@ -18,7 +19,7 @@ def create_pizza_storage_table():
 
 def init_pizza():
     '''Inits '''
-    sql = 'INSERT INTO PIZZA_STORAGE (name, amount) values(?, ?)'
+    sql = f'INSERT INTO {TABLE_NAME} (amount) values(?, ?)'
     data = [
         ('Pepperoni', 100),
         ('Barbecue', 80),
@@ -70,12 +71,12 @@ if __name__ == "__main__":
     if not db_file:
         create_pizza_storage_table()
         init_pizza()
-        
-    pizza_name = 'Pepperoni'    
-    print(get_pizza_amount(pizza_name=pizza_name))
-    
-    take_pizza(pizza_name=pizza_name)
-    print(get_pizza_amount(pizza_name=pizza_name))
-    
-    add_pizza(pizza_name=pizza_name)
-    print(get_pizza_amount(pizza_name=pizza_name))
+
+    # pizza_name = 'Pepperoni'
+    # print(get_pizza_amount(pizza_name=pizza_name))
+
+    # take_pizza(pizza_name=pizza_name)
+    # print(get_pizza_amount(pizza_name=pizza_name))
+
+    # add_pizza(pizza_name=pizza_name)
+    # print(get_pizza_amount(pizza_name=pizza_name))

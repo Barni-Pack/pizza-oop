@@ -1,205 +1,172 @@
-from pickle import GLOBAL
-import tkinter as tk
-from tkinter.ttk import Label
+from widgets import Widgets
+from engine import window, tk
 from app.terminal import terminal
 from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
 from functools import partial
-from app import pizza_storage
+# from app import pizza_storage
+from config import Offset
+from database.alchemy import get_pizza_types
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
 window_width = 420 + 6 * 10
 window_height = 420
-window = tk.Tk()
+
+
 window.title('Terminal')
 window.geometry(f'{window_width}x{window_height}')
 window.resizable(width=False, height=False)
 
 # window.rowconfigure(0, minsize=50, weight=1)
 window.columnconfigure(list(range(6)), minsize=50, weight=1)
-
-ORDER_NUMBER = 0
-
-WIDGETS = dict()
-
-
-class Offset:
-    greetings = 0
-    order_number = 1
-
-
-greetings_label = tk.Label(
-    master=window,
-    text='Добавление пиццы',
-)
-greetings_label.grid(
-    row=Offset.greetings,
+ROW = 0
+Widgets.label(
+    text='Панель администратора',
+    row=ROW,
     columnspan=6,
-    sticky='nsew',
-    pady=20,
+    pady=10,
 )
+ROW += 1
+
+def redraw_labels(func):
+    def wrapper(*args, **kwargs):
+        func(*args, **kwargs)
+        # update_counters()
+        # update_order_price()
+    return wrapper
 
 
-class Widget:
-    def label(
-        text: str,
-        row: int,
-        column: int = None,
-        sticky='nsew',
-        **kwargs,
-    ) -> None:
-        '''Creates and places with grid new label'''
-        global WIDGETS
-
-        # Add column to kwrags because it can be None
-        kwargs.update(dict(
-            column=column,
-        ))
-        # Filter None values from dict
-        {k: v for k, v in kwargs.items() if v is not None}
-        # (row_column) is id of widget
-        widget_key = f'{row}_{column if column else None}'
-
-        WIDGETS[widget_key] = tk.Label(
-            master=window,
-            text=text,
-        )
-        WIDGETS[widget_key].grid(
-            row=row,
-            sticky=sticky,
-            **kwargs,
-        )
+@redraw_labels
+def add_product(pizza: Pizza):
+    terminal.order.add_product(product=pizza)
 
 
-class Labels:
-    greetings = dict(
-        text='Добавление пиццы',
-        row=Offset.greetings,
-        columnspan=6,
-        sticky='nsew',
-        pady=20,
+@redraw_labels
+def remove_product(pizza: Pizza):
+    terminal.order.remove_product(product=pizza)
+
+
+def get_menu_len(pizzas: list[dict]) -> int:
+    menu_len = 0
+    l_of_d = [pizza[toppings] for pizza in pizzas]
+    menu_len += len(l_of_d)
+    for d in l_of_d:
+        menu_len += len(d)
+    return l_of_d
+    
+
+pizzas = get_pizza_types()
+
+for pizza_id, pizza in enumerate(pizzas):
+    pizza_name = pizza['name']
+    ROW += 1
+
+    Widgets.label(
+        text=pizza_name + ':',
+        row=ROW,
+        column=0,
+        columnspan=2,
     )
 
-    order_number = dict(
-        text=f'Номер заказа: {ORDER_NUMBER}',
-        row=Offset.order_number,
-        columnspan=6,
+    Widgets.label(
+        text='Цена (еще не считается)',
+        row=ROW,
+        column=2,
     )
 
-Widget.label(**Labels.greetings)
-Widget.label(**Labels.order_number)
+    Widgets.button(
+        text="Edit",
+        command=partial(remove_product, pizza),
+        row=ROW,
+        column=4,
+    )
 
-# Updater.greetings_label()
+    Widgets.button(
+        text="Del",
+        command=partial(add_product, pizza),
+        row=ROW,
+        column=5,
+    )
 
-# def update_count_label(pizza: Pizza):
-#     pizza_count = len(
-#         [p for p in terminal.order.products_list if p == pizza]
-#     )
-#     print(pizza_count)
-#     count_label = tk.Label(
-#         master=window,
-#         text=pizza_count,
-#     )
-#     count_label.grid(
-#         row=row_offset,
-#         column=5,
-#         sticky='nsew',
-#     )
+    def params_string_gen(key, value) -> str:
+        string_list = []
+        for k, v in value.items():
+            string_list.append(str(v))
+        return ', '.join(string_list)
 
+    ROW += 1
+    Widgets.label(
+        text='Начинка',
+        row=ROW,
+        column=0,
+        # columnspan=2,
+    )
 
-# def redraw_labels(func):
-#     def wrapper(*args, **kwargs):
-#         func(*args, **kwargs)
-#         update_counters()
-#         update_order_price()
-#     return wrapper
+    Widgets.label(
+        text='цена',
+        row=ROW,
+        column=1,
+    )
+    Widgets.label(
+        text='время',
+        row=ROW,
+        column=2,
+    )
+    Widgets.label(
+        text='кол-во',
+        row=ROW,
+        column=3,
+    )
+    ROW += 1
+    toppings = pizza['toppings']
+    for topping_id, (key, value) in enumerate(toppings.items()):
+        name = key
+        params = params_string_gen(key=key, value=value)
+        # text = f'{name}: {params}'
+        ROW += topping_id + 1
+        Widgets.label(
+            text=name,
+            row=ROW,
+            column=0,
+            # columnspan=4,
+        )
+        for i, (k, v) in enumerate(value.items()):
+            Widgets.label(
+                text=str(v),
+                row=ROW,
+                column=1+i,
+            )
+        Widgets.button(
+            text="-",
+            # command=partial(remove_product, pizza),
+            row=ROW,
+            column=4,
+        )
 
-
-# @redraw_labels
-# def add_product(pizza: Pizza):
-#     terminal.order.add_product(product=pizza)
-
-
-# @redraw_labels
-# def remove_product(pizza: Pizza):
-#     terminal.order.remove_product(product=pizza)
-
-
-# pizzas = [
-#     Pepperoni(),
-#     Barbecue(),
-#     Seafood(),
-# ]
-# for pizza_id, pizza in enumerate(pizzas):
-#     pizza_name = pizza.__class__.__name__
-#     pizza_in_stock = pizza_storage.get_pizza_amount(pizza_name=pizza_name)
-#     row_offset = pizza_id + 1
-
-#     pizza_label = tk.Label(
-#         master=window,
-#         text=pizza_name + f' ( in stock: {pizza_in_stock} ) :',
-#     )
-#     pizza_price = tk.Label(
-#         master=window,
-#         text=pizza.price
-#     )
-#     btn_decrease = tk.Button(
-#         master=window,
-#         text="-",
-#         command=partial(remove_product, pizza)
-#     )
-#     btn_increase = tk.Button(
-#         master=window,
-#         text="+",
-#         command=partial(add_product, pizza)
-#     )
-
-#     pizza_label.grid(
-#         row=row_offset,
-#         column=0,
-#         columnspan=2,
-#         sticky='nsew',
-#     )
-#     pizza_price.grid(
-#         row=row_offset,
-#         column=2,
-#         sticky='nsew',
-#     )
-#     btn_decrease.grid(
-#         row=row_offset,
-#         column=3,
-#         sticky='nsew',
-#     )
-#     btn_increase.grid(
-#         row=row_offset,
-#         column=4,
-#         sticky='nsew',
-#     )
-
-
-# def update_counters():
-#     for pizza_id, pizza in enumerate(pizzas):
-#         row_offset = pizza_id + 1
-#         pizza_count = len(
-#             [p for p in terminal.order.products_list if p == pizza]
-#         )
-#         count_label = tk.Label(
-#             master=window,
-#             text=pizza_count,
-#         )
-#         count_label.grid(
-#             row=row_offset,
-#             column=5,
-#             sticky='nsew',
-#         )
+        Widgets.button(
+            text="+",
+            # command=partial(add_product, pizza),
+            row=ROW,
+            column=5,
+        )
+    
+        # def update_counters():
+        #     for pizza_id, pizza in enumerate(pizzas):
+        #         row_offset = pizza_id + 1
+        #         pizza_count = len(
+        #             [p for p in terminal.order.products_list if p == pizza]
+        #         )
+        #         Widgets.label(
+        #             text=pizza_count,
+        #             row=row_offset,
+        #             column=5,
+        #             sticky='nsew',
+        #         )
 
 
 # def update_order_price():
 #     order_price = terminal.order.get_total_price()
-#     order_label = tk.Label(
-#         master=window,
+#     Widgets.label(
 #         text=f'Order total price: {order_price}',
-#     )
-#     order_label.grid(
 #         row=len(pizzas) + 1,
 #         columnspan=6,
 #         sticky='nsew',
@@ -207,23 +174,16 @@ Widget.label(**Labels.order_number)
 #     )
 
 
-# @redraw_labels
-# def commit_order():
-#     terminal.order.commit()
+@redraw_labels
+def commit_order():
+    terminal.order.commit()
 
 
-# commit_order_button = tk.Button(
-#     master=window,
-#     text='Commit your order!',
+# Widgets.button(
 #     command=commit_order,
-# )
-
-
-# commit_order_button.grid(
-#     row=len(pizzas) + 3,
-#     columnspan=4,
-#     column=1,
-#     sticky='nsew',
+#     row=len(pizzas) + 2,
+#     text='Commit your order!',
+#     columnspan=6,
 # )
 
 # update_counters()

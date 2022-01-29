@@ -3,7 +3,7 @@ from engine import window, tk
 from app.terminal import terminal
 from app.pizza_classes import Pizza, Pepperoni, Barbecue, Seafood
 from functools import partial
-from app import pizza_storage
+# from app import pizza_storage
 from config import Offset
 
 # TODO: adjust window_height to size of pizzas, or make pizza's list scrollable
@@ -52,11 +52,11 @@ pizzas = [
 ]
 for pizza_id, pizza in enumerate(pizzas):
     pizza_name = pizza.__class__.__name__
-    pizza_in_stock = pizza_storage.get_pizza_amount(pizza_name=pizza_name)
+    # pizza_in_stock = pizza_storage.get_pizza_amount(pizza_name=pizza_name)
     row_offset = pizza_id + 1
 
     Widgets.label(
-        text=pizza_name + f' ( in stock: {pizza_in_stock} ) :',
+        text=pizza_name+ ':',
         row=row_offset,
         column=0,
         columnspan=2,
